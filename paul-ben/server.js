@@ -65,7 +65,6 @@ app.post('/articles', (request, response) => {
     )
   }
 
-  // TODO: Fill in SQL query and values used in queryThree()
   function queryThree(author_id) {
     SQL = 'INSERT INTO articles(title, category, "publishedOn", body, author_id) VALUES($1, $2, $3, $4, $5);';
     values = [
@@ -86,8 +85,6 @@ app.post('/articles', (request, response) => {
 });
 
 app.put('/articles/:id', function(request, response) {
-
-  // TODO: Fill in SQL query and values
   let SQL = 'UPDATE authors SET author = $1, "authorUrl" = $2 WHERE author_id = $3;';
   let values = [
     request.body.author,
@@ -96,8 +93,6 @@ app.put('/articles/:id', function(request, response) {
   ];
   client.query( SQL, values )
     .then(() => {
-
-      // TODO: Fill in SQL query and values
       let SQL = 'UPDATE articles SET title = $1, category = $2, "publishedOn" = $3, body = $4 WHERE article_id = $5';
       let values = [
         request.body.title,
