@@ -7,9 +7,9 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 // conString for mac:
-const conString = 'postgres://localhost:5432/kilovolt';
+// const conString = 'postgres://localhost:5432/kilovolt';
 // conString template for windows:
-// const conString = 'postgres://USER:PASSWORD@HOST:PORT/DBNAME';
+const conString = 'postgres://postgres:password@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', error => {
