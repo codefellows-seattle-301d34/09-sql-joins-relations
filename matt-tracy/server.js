@@ -47,33 +47,37 @@ app.post('/articles', (request, response) => {
 
   client.query( SQL, values,
     function(err) {
-      if (err) console.error(err);
+      if (err && err.code !== '23505') console.error('QUERY ONE ERROR',err);
       // REVIEW: This is our second query, to be executed when this first query is complete.
+      
       queryTwo();
     }
   )
 
-  SQL = '';
-  values = [];
-
+  
   function queryTwo() {
-    client.query( SQL, values,
+    let SQL2 = 'SELECT author_id FROM authors WHERE author = $1';
+    values = [request.body.author];
+    console.log("In query two", SQL2, values);
+    client.query( SQL2, values,
       function(err, result) {
-        if (err) console.error(err);
-
+        if (err) console.error('QUERY TWO',err);
+        console.log('Query two complete', result.rows[0].author_id )
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
       }
     )
   }
 
-  SQL = '';
-  values = [];
-
+  
   function queryThree(author_id) {
-    client.query( SQL, values,
+    let SQL3 = 'INSERT INTO articles (author_id, title, category, "publishedOn", body) VALUES ($1, $2, $3, $4, $5)';
+    values = [author_id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
+    console.log("In query three", SQL3, values);
+    console.log('Request title', request.body.title)
+    client.query( SQL3, values,
       function(err) {
-        if (err) console.error(err);
+        if (err) console.error('QUERY THREE',err);
         response.send('insert complete');
       }
     );
