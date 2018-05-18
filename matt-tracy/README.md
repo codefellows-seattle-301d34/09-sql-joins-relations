@@ -1,21 +1,23 @@
 # SQL and PostgreSQL
 
-Author: Karina Amador, Tracy Williams.
+Author: Matt Gordon, Tracy Williams.
 
 ### Overview
 
-We started using a SQL database instead of getting data from a file.
-We made the connections between server and SQL database.
+We implemented a multi-table form of the database. Join used to retrieve all data from the two tables. Join on author_id.
 
 ### Getting Started
 
-1. Clone https://github.com/akarinaat/08-sql-intro-and-postgres
-2. start server: node server.js
-3. open public/new.html. add content, press submit.
-4. look for responses in browser console and node console.
+1. Clone https://github.com/TCW417/09-sql-joins-relations
+2. Update conString in server.js to reflect your host operating system.
+3. start server: node server.js
+4. open localhost:3000 and localhost:3000/new-article. add content, press submit.
+5. look for responses in browser console and node console.
 
 
 ### Architecture
+
+node.js used as the server, with Express and PostgreSQL.
 
 #### Technologies used:
 
@@ -23,7 +25,8 @@ We made the connections between server and SQL database.
 - CSS3
 - jQuery
 - JavaScript
-- SQL
+- Handlebars
+- PostgreSQL
 - Express
 
 ### Credits and Collaporations
@@ -35,3 +38,4 @@ We made the connections between server and SQL database.
 - Marked JS library
 - PostgreSQL
 - Express
+- Handlebars
