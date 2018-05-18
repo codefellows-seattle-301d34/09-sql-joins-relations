@@ -58,7 +58,6 @@ app.post('/articles', (request, response) => {
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
-        console.log(result);
 
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
@@ -76,7 +75,7 @@ app.post('/articles', (request, response) => {
       request.body.body,
       author_id
     ];
-      
+
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
@@ -89,14 +88,24 @@ app.post('/articles', (request, response) => {
 app.put('/articles/:id', function(request, response) {
 
   // TODO: Fill in SQL query and values
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE authors SET author = $1, "authorUrl" = $2 WHERE author_id = $3;';
+  let values = [
+    request.body.author,
+    request.body.authorUrl,
+    request.body.author_id
+  ];
   client.query( SQL, values )
     .then(() => {
 
       // TODO: Fill in SQL query and values
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET title = $1, category = $2, "publishedOn" = $3, body = $4 WHERE article_id = $5';
+      let values = [
+        request.body.title,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.params.id
+      ];
       client.query( SQL, values )
     })
     .then(() => {

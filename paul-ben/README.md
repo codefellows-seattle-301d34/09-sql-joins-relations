@@ -42,6 +42,8 @@ This application is a blog, which communicates with a local server via Node.js a
 
 05-19-2018 10:35am - Finished app.post functionality.
 
+05-19-2108 10:53am - Finished app.put functionality.
+
 ## Credits and Collaborations
 
 * Oscar Otero - [JQuery Quick API Reference](https://oscarotero.com/jquery/)
