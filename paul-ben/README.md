@@ -34,7 +34,9 @@ This application is a blog, which communicates with a local server via Node.js a
 
 05-19-2018 9:18am - Set conString. Fixed indentation issue.
 
-05-19-2018 9:37 - Added TODO items to server.js; Completed SQL query within app.get('/articles').
+05-19-2018 9:37am - Added TODO items to server.js; Completed SQL query within app.get('/articles').
+
+05-19-2018 9:45am - Completed SQL query within app.post('/articles').
 
 ## Credits and Collaborations
 
