@@ -38,6 +38,8 @@ This application is a blog, which communicates with a local server via Node.js a
 
 05-19-2018 9:45am - Completed SQL query within app.post('/articles').
 
+05-19-2018 9:57am - Modified SQL query within app.post('/articles') to do nothing on conflict; Completed SQL query for queryTwo() function.
+
 ## Credits and Collaborations
 
 * Oscar Otero - [JQuery Quick API Reference](https://oscarotero.com/jquery/)

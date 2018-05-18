@@ -34,7 +34,7 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = 'INSERT INTO authors(author, "authorUrl") VALUES ($1, $2)';
+  let SQL = 'INSERT INTO authors(author, "authorUrl") VALUES ($1, $2) ON CONFLICT DO NOTHING';
   let values = [
     request.body.author,
     request.body.authorUrl
@@ -48,9 +48,10 @@ app.post('/articles', (request, response) => {
     }
   )
 
-  // TODO: Fill in SQL query and values used in queryTwo()
-  SQL = '';
-  values = [];
+  SQL = 'SELECT * FROM authors WHERE author=$1';
+  values = [
+    request.body.author
+  ];
 
   function queryTwo() {
     client.query( SQL, values,
