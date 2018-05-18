@@ -32,6 +32,8 @@ This application is a blog, which communicates with a local server via Node.js a
 
 05-18-2018 9:11am - All dependancies installed, package-lock.json created.
 
+05-19-2018 9:18am - Set conString. Fixed indentation issue.
+
 ## Credits and Collaborations
 
 * Oscar Otero - [JQuery Quick API Reference](https://oscarotero.com/jquery/)
