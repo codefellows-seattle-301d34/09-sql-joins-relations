@@ -9,7 +9,7 @@ const app = express();
 //roman
 // const conString = 'postgres://postgres:1234@localhost:5432/postgres';
 
-//jb
+//GB
 const conString = 'postgres://postgres:postgresGB@localhost:5432/kilovolt'
 
 
@@ -71,7 +71,7 @@ app.post('/articles', (request, response) => {
       function(err, result) {
         if (err) console.error(err);
         console.log('query two successful');
-        console.log(SQL, values);
+        console.log(result.rows);
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
       }
@@ -82,11 +82,12 @@ app.post('/articles', (request, response) => {
     SQL = `INSERT INTO articles(author_id, title, category, "publishedOn", body)
   VALUES ($1, $2, $3, $4, $5);`;
     values = [
+      author_id,
       request.body.title,
       request.body.category,
       request.body.publishedOn,
       request.body.body,
-      author_id
+
     ];
     client.query( SQL, values,
       function(err) {
@@ -107,11 +108,11 @@ app.put('/articles/:id', function(request, response) {
     request.params.id];
   client.query( SQL, values )
     .then(() => {
-      let SQL = `UPDATE authors SET author = $1, "authorURL" = $2 WHERE author_id = $3 `;
+      let SQL = `UPDATE authors SET author = $1, "authorUrl" = $2 WHERE author_id = $3 `;
       let values = [
-        request.body.author_id,
         request.body.author,
-        request.body.authorUrl
+        request.body.authorUrl,
+        request.body.author_id,
       ];
       client.query( SQL, values )
     })
