@@ -1,0 +1,26 @@
+{
+  "name": "public",
+  "version": "1.0.0",
+  "description": "Andrew Amy Lab 09 (Kilovolt Blog)",
+  "main": "\u001b[D\u001b[A\u001b[B\u001b[D\u001b[D\u001bserver.js)",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "todoville"
+  },
+  "keywords": [
+    "npm",
+    "express",
+    "node",
+    "codefellows"
+  ],
+  "author": "Andrew Peacock, Amy Cohen",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "pg": "^7.4.3"
+  }
+}
