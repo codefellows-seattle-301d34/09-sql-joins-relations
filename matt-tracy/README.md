@@ -9,9 +9,10 @@ We implemented a multi-table form of the database. Join used to retrieve all dat
 ### Getting Started
 
 1. Clone https://github.com/TCW417/09-sql-joins-relations
-2. start server: node server.js
-3. open localhost:3000 and localhost:3000/new-article. add content, press submit.
-4. look for responses in browser console and node console.
+2. Update conString in server.js to reflect your host operating system.
+3. start server: node server.js
+4. open localhost:3000 and localhost:3000/new-article. add content, press submit.
+5. look for responses in browser console and node console.
 
 
 ### Architecture
