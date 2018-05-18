@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 //MAC
+<<<<<<< HEAD
 const conString = 'postgresql://amycohen:@localhost:5432/kilovolt';
 
 //WINDOWS
@@ -16,6 +17,13 @@ const client = new pg.Client({
   database: 'kilovolt',
   port: 5432,
 });
+=======
+const conString = 'postgres://localhost:5432';
+
+//WINDOWS
+// const conString = 'postgres://postgres:hello@localhost:5432/kilovolt';
+const client = new pg.Client(conString);
+>>>>>>> 96a13c1e43c825b21cb7bef6c1d832b8eb423dd3
 client.connect();
 client.on('error', error => {
   console.error(error);
