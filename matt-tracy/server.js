@@ -7,9 +7,9 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 // conString for mac:
-// const conString = 'postgres://localhost:5432/kilovolt';
+const conString = 'postgres://localhost:5432/kilovolt';
 // conString template for windows:
-const conString = 'postgres://postgres:password@localhost:5432/kilovolt';
+// const conString = 'postgres://postgres:password@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', error => {
@@ -28,7 +28,7 @@ app.get('/new-article', (request, response) => {
 // REVIEW: These are routes for making API calls to enact CRUD operations on our database.
 app.get('/articles', (request, response) => {
   let SQL = '\
-    SELECT author, "authorUrl", title, category, "publishedOn", body\
+    SELECT *\
     FROM articles\
     JOIN authors\
     ON articles.author_id = authors.author_id;';
@@ -94,12 +94,17 @@ app.put('/articles/:id', function(request, response) {
   let values = [request.params.id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
   client.query( SQL, values )
     .then(() => {
+      // let SQL = 'UPDATE authors\
+      //  SET author = $2,\
+      //  "authorUrl" = $3\
+      //  FROM articles WHERE authors.author_id = articles.author_id\
+      // AND article_id = $1';
       let SQL = 'UPDATE authors\
        SET author = $2,\
        "authorUrl" = $3\
-       FROM articles WHERE authors.author_id = articles.author_id\
-      AND article_id = $1';
-      let values = [request.params.id, request.body.author, request.body.authorUrl];
+       WHERE authors.author_id = $1'
+
+      let values = [request.body.author_id, request.body.author, request.body.authorUrl];
       client.query( SQL, values )
     })
     .then(() => {
