@@ -6,8 +6,16 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-const conString = 'postgres://postgres:hello@localhost:5432/kilovolt';
-const client = new pg.Client(conString);
+//MAC
+const conString = 'postgresql://amycohen:@localhost:5432/kilovolt';
+
+//WINDOWS
+// const conString = 'postgres://postgres:hello@localhost:5432/kilovolt';
+const client = new pg.Client({
+  host: 'localhost',
+  database: 'kilovolt',
+  port: 5432,
+});
 client.connect();
 client.on('error', error => {
   console.error(error);
@@ -34,12 +42,11 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = `INSERT INTO authors(author_id, author, "authorUrl")
-  VALUES ($1, $2, $3);
+  let SQL = `INSERT INTO authors(author, "authorUrl")
+  VALUES ($1, $2);
   `;
   let values = [
     request.body.author,
-    request.body.author_id,
     request.body.authorUrl,
   ];
 
@@ -51,10 +58,10 @@ app.post('/articles', (request, response) => {
     }
   )
 
-  SQL = `SELECT author FROM authors WHERE author=$1;`;
-  values = [request.body.author];
-
+  
   function queryTwo() {
+    SQL = `SELECT author_id FROM authors WHERE author=$1;`;
+    values = [request.body.author];
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
@@ -65,17 +72,16 @@ app.post('/articles', (request, response) => {
     )
   }
 
-  SQL = `INSERT INTO articles(article_id, author_id, title, category, "publishedOn", body) VALUES $1, $2, $3, $4, $5, $6);`;
-  values = [
-    request.body.article_id,
-    request.body.author_id,
-    request.body.title,
-    request.body.category,
-    request.body.publishedOn,
-    request.body.body
-  ];
-
+  
   function queryThree(author_id) {
+    SQL = `INSERT INTO articles(author_id, title, category, "publishedOn", body) VALUES ($1, $2, $3, $4, $5);`;
+    values = [
+      author_id,
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body
+    ];
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
@@ -86,12 +92,24 @@ app.post('/articles', (request, response) => {
 });
 
 app.put('/articles/:id', function(request, response) {
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE authors SET author=$1, "authorUrl"=$2 WHERE author_id=$3;';
+  let values = [
+    request.body.author,
+    request.body.authorUrl,
+    request.body.author_id
+  ];
   client.query( SQL, values )
     .then(() => {
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET body=$1, category=$2, "publishedOn"=$3, title=$4, author_id=$5 WHERE article_id=$6;';
+      console.log(request.body)
+      let values = [
+        request.body.body,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.title,
+        request.body.author_id,
+        request.params.id,
+      ];
       client.query( SQL, values )
     })
     .then(() => {
