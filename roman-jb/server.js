@@ -7,10 +7,10 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 //roman
-const conString = 'postgres://postgres:1234@localhost:5432/postgres';
+// const conString = 'postgres://postgres:1234@localhost:5432/postgres';
 
-//jb
-//const conString = 'postgres://postgres:1234@localhost:5432/postgres'
+//GB
+const conString = 'postgres://postgres:postgresGB@localhost:5432/kilovolt'
 
 
 
@@ -42,48 +42,53 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = `BEGIN;
-  INSERT INTO articles(title, author_id, category, "publishedOn", body)
-  VALUES ($1, $2, $3, $4, $5);
-  INSERT INTO authors(author_id, author, "authorUrl") 
-  VALUES ($1, $2, $3);`;
-  
+  let SQL = `
+  INSERT INTO authors(author, "authorUrl")
+  VALUES ($1, $2) ON CONFLICT DO NOTHING;`;
+
   let values = [
-    request.body.title,
     request.body.author,
     request.body.authorUrl,
-    request.body.category,
-    request.body.publishedOn,
-    request.body.body,
-    request.body.author_id,
   ];
 
   client.query( SQL, values,
     function(err) {
       if (err) console.error(err);
+      console.log('query one successful');
       // REVIEW: This is our second query, to be executed when this first query is complete.
       queryTwo();
     }
   )
 
-  SQL = '';
-  values = [];
+
 
   function queryTwo() {
+    SQL = `SELECT author_id FROM authors WHERE author = $1;`;
+    values = [
+      request.body.author,
+    ];
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
-
+        console.log('query two successful');
+        console.log(result.rows);
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
       }
     )
   }
 
-  SQL = '';
-  values = [];
-
   function queryThree(author_id) {
+    SQL = `INSERT INTO articles(author_id, title, category, "publishedOn", body)
+  VALUES ($1, $2, $3, $4, $5);`;
+    values = [
+      author_id,
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body,
+
+    ];
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
@@ -94,12 +99,21 @@ app.post('/articles', (request, response) => {
 });
 
 app.put('/articles/:id', function(request, response) {
-  let SQL = '';
-  let values = [];
+  let SQL = `UPDATE articles SET title = $1, category = $2, "publishedOn" = $3, body = $4 WHERE article_id = $5`;
+  let values = [
+    request.body.title,
+    request.body.category,
+    request.body.publishedOn,
+    request.body.body,
+    request.params.id];
   client.query( SQL, values )
     .then(() => {
-      let SQL = '';
-      let values = [];
+      let SQL = `UPDATE authors SET author = $1, "authorUrl" = $2 WHERE author_id = $3 `;
+      let values = [
+        request.body.author,
+        request.body.authorUrl,
+        request.body.author_id,
+      ];
       client.query( SQL, values )
     })
     .then(() => {
