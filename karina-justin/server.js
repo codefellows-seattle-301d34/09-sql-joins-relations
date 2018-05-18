@@ -23,8 +23,9 @@ app.get('/new-article', (request, response) => {
 });
 
 // REVIEW: These are routes for making API calls to enact CRUD operations on our database.
+// NOTE: The below query was enclosed in backticks, but Cameron informed Justin that they were not stricly necessary because the added functionality they provided was not being used anyway.
 app.get('/articles', (request, response) => {
-  client.query(`SELECT * FROM articles JOIN authors ON articles.author_id = authors.author_id;`)
+  client.query('SELECT * FROM articles JOIN authors ON articles.author_id = authors.author_id;')
     .then(result => {
       response.send(result.rows);
     })
@@ -48,13 +49,17 @@ app.post('/articles', (request, response) => {
     }
   )
 
-  SQL = '';//get the id
-  values = [];
+  
 
   function queryTwo() {
+    SQL = 'SELECT author_id FROM authors where author = $1;';//get the id
+    values = [
+      request.body.author
+    ];
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
+        console.log(result);
 
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
@@ -62,10 +67,17 @@ app.post('/articles', (request, response) => {
     )
   }
 
-  SQL = '';//
-  values = [];
+  
 
   function queryThree(author_id) {
+    SQL = 'INSERT INTO articles ( author_id, title, category, "publishedOn", body) VALUES ($1, $2, $3, $4, $5);';
+    values = [
+      author_id,
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body
+    ];
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
