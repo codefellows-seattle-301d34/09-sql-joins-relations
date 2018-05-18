@@ -1,6 +1,6 @@
 'use strict';
 
-function Article (rawDataObj) {
+function Article(rawDataObj) {
   Object.keys(rawDataObj).forEach(key => {
     this[key] = rawDataObj[key]
   }, this);
@@ -8,10 +8,10 @@ function Article (rawDataObj) {
 
 Article.all = [];
 
-Article.prototype.toHtml = function() {
+Article.prototype.toHtml = function () {
   var template = Handlebars.compile($('#article-template').text());
 
-  this.daysAgo = parseInt((new Date() - new Date(this.publishedOn))/60/60/24/1000);
+  this.daysAgo = parseInt((new Date() - new Date(this.publishedOn)) / 60 / 60 / 24 / 1000);
   this.publishStatus = this.publishedOn ? `published ${this.daysAgo} days ago` : '(draft)';
   this.body = marked(this.body);
 
@@ -19,7 +19,7 @@ Article.prototype.toHtml = function() {
 };
 
 Article.loadAll = articleData => {
-  articleData.sort((a,b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
+  articleData.sort((a, b) => (new Date(b.publishedOn)) - (new Date(a.publishedOn)))
 
   articleData.forEach(articleObject => Article.all.push(new Article(articleObject)))
 };
@@ -30,7 +30,7 @@ Article.fetchAll = callback => {
       Article.loadAll(results);
       callback();
     }
-  )
+    )
 };
 
 Article.truncateTable = callback => {
@@ -38,32 +38,32 @@ Article.truncateTable = callback => {
     url: '/articles',
     method: 'DELETE',
   })
-  .then(data => {
-    console.log(data);
-    if (callback) callback();
-  });
+    .then(data => {
+      console.log(data);
+      if (callback) callback();
+    });
 };
 
-Article.prototype.insertRecord = function(callback) {
-  $.post('/articles', {author: this.author, authorUrl: this.authorUrl, body: this.body, category: this.category, publishedOn: this.publishedOn, title: this.title})
-  .then(data => {
-    console.log(data);
-    if (callback) callback();
-  })
+Article.prototype.insertRecord = function (callback) {
+  $.post('/articles', { author: this.author, authorUrl: this.authorUrl, body: this.body, category: this.category, publishedOn: this.publishedOn, title: this.title })
+    .then(data => {
+      console.log(data);
+      if (callback) callback();
+    })
 };
 
-Article.prototype.deleteRecord = function(callback) {
+Article.prototype.deleteRecord = function (callback) {
   $.ajax({
     url: `/articles/${this.article_id}`,
     method: 'DELETE'
   })
-  .then(data => {
-    console.log(data);
-    if (callback) callback();
-  });
+    .then(data => {
+      console.log(data);
+      if (callback) callback();
+    });
 };
 
-Article.prototype.updateRecord = function(callback) {
+Article.prototype.updateRecord = function (callback) {
   $.ajax({
     url: `/articles/${this.article_id}`,
     method: 'PUT',
@@ -77,8 +77,8 @@ Article.prototype.updateRecord = function(callback) {
       author_id: this.author_id
     }
   })
-  .then(data => {
-    console.log(data);
-    if (callback) callback();
-  });
+    .then(data => {
+      console.log(data);
+      if (callback) callback();
+    });
 };
