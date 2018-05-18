@@ -6,7 +6,11 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-const conString = '';
+// This is the conString for Windows:
+// const conString = 'postgres://USER:PASSWORD@HOST:PORT/DBNAME';
+// This is the conString for Mac:
+const conString = 'postgres://localhost:5432/kilovolt';
+
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', error => {
@@ -24,7 +28,10 @@ app.get('/new-article', (request, response) => {
 
 // REVIEW: These are routes for making API calls to enact CRUD operations on our database.
 app.get('/articles', (request, response) => {
-  client.query(``)
+  client.query(`SELECT * 
+  FROM articles
+  INNER JOIN authors
+  ON author_id = author_id`)
     .then(result => {
       response.send(result.rows);
     })
@@ -34,7 +41,9 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = '';
+  // let SQL = '';
+  let SQL = `INSERT INTO articles(author, "authorURL")
+  VALUES ($1, $2)`;
   let values = [];
 
   client.query( SQL, values,
