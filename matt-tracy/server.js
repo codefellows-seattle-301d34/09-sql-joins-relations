@@ -58,11 +58,9 @@ app.post('/articles', (request, response) => {
   function queryTwo() {
     let SQL2 = 'SELECT author_id FROM authors WHERE author = $1';
     values = [request.body.author];
-    console.log("In query two", SQL2, values);
     client.query(SQL2, values,
       function(err, result) {
         if (err) console.error('QUERY TWO',err);
-        console.log('Query two complete', result.rows[0].author_id )
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
       }
@@ -73,8 +71,6 @@ app.post('/articles', (request, response) => {
   function queryThree(author_id) {
     let SQL3 = 'INSERT INTO articles (author_id, title, category, "publishedOn", body) VALUES ($1, $2, $3, $4, $5)';
     values = [author_id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
-    console.log("In query three", SQL3, values);
-    console.log('Request title', request.body.title)
     client.query(SQL3, values,
       function(err) {
         if (err) console.error('QUERY THREE',err);
@@ -83,7 +79,6 @@ app.post('/articles', (request, response) => {
     );
   }
 });
-//update authors set author = 'tracy' from articles where authors.author_id = articles.author_id and article_id = 251;
 
 app.put('/articles/:id', function(request, response) {
   let SQL = 'UPDATE articles\
@@ -94,17 +89,13 @@ app.put('/articles/:id', function(request, response) {
   let values = [request.params.id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
   client.query( SQL, values )
     .then(() => {
-      // let SQL = 'UPDATE authors\
-      //  SET author = $2,\
-      //  "authorUrl" = $3\
-      //  FROM articles WHERE authors.author_id = articles.author_id\
-      // AND article_id = $1';
       let SQL = 'UPDATE authors\
        SET author = $2,\
        "authorUrl" = $3\
        WHERE authors.author_id = $1'
-
-      let values = [request.body.author_id, request.body.author, request.body.authorUrl];
+      let values = [request.body.author_id, 
+        request.body.author, 
+        request.body.authorUrl];
       client.query( SQL, values )
     })
     .then(() => {
