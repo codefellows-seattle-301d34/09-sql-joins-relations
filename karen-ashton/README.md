@@ -21,6 +21,11 @@ Just download the source code and enjoy.
 * postgres
 
 ## Change Log
+- 9:09AM 05/18/2018 Readme, licence, Linter done 
+- 9:55AM 05/18/2018 Get articles route working
+- 11:26AM 05/18/2018 fixed query 1-3 for insert new article
+- 11:49AM 05/18/2018 Put articles route done
+- 1:13PM 05/18/2018 Fixed update articles
 
 ## Credits and Collaborations
 * Oscar Otero - [JQuery Quick API Reference](https://oscarotero.com/jquery/)

@@ -125,7 +125,7 @@ app.put('/articles/:id', function(request, response) {
       
       let SQL = `
       UPDATE articles
-      SET title=$1, category=$2, "publishedOn"=$3, body=$4, author_id=$5
+      SET title=$1, category=$2, "publishedOn"=$3, body=$4, author_id=$5g
       WHERE article_id=$6
     ;`;
       let values = [
