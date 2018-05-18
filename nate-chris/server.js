@@ -34,7 +34,7 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = 'INSERT INTO authors (author, authorUrl) SELECT DISTINCT ($1, $2);';
+  let SQL = 'INSERT INTO authors (author, "authorUrl") VALUES($1, $2) ON CONFLICT DO NOTHING;';
   let values = [
     request.body.author,
     request.body.authorUrl,
@@ -50,7 +50,7 @@ app.post('/articles', (request, response) => {
 
   
   function queryTwo() {
-    SQL = 'SELECT * FROM authors WHERE author = $1;';
+    SQL = 'SELECT author_id FROM authors WHERE author = $1;';
     values = [
       request.body.author,
     ];
@@ -59,6 +59,7 @@ app.post('/articles', (request, response) => {
         if (err) console.error(err);
 
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
+        console.log(result);
         queryThree(result.rows[0].author_id);
       }
     )
