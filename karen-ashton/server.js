@@ -51,43 +51,51 @@ app.post('/articles', (request, response) => {
   ];
 
   client.query( SQL, values,
-    function(err) {
+    function(err, result) {
       if (err) console.error(err);
       // REVIEW: This is our second query, to be executed when this first query is complete.
       queryTwo();
     }
   )
 
-  SQL = `
-    SELECT *
-    FROM authors
-    WHERE author = $1
-  ;`;
-  values = [request.body.author];
+
 
   function queryTwo() {
+
+    SQL = `
+      SELECT author_id
+      FROM authors
+      WHERE author = $1
+    ;`;
+    values = [
+      request.body.author
+    ];
+
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
-
+        
         // REVIEW: This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query.
         queryThree(result.rows[0].author_id);
+        // response.send([result.rows[0], result.rows[0].author, result.rows[0].authorUrl, result.rows[0].author_id]);
       }
     )
   }
 
-  SQL = `
-    INSERT INTO articles (author_id, title, category, "publishedOn", body)
-    VALUES (author_id, $1, $2, $3, $4)
-  ;`;
-  values = [
-    request.body.title,
-    request.body.category,
-    request.body.publishedOn,
-    request.body.body
-  ];
-
   function queryThree(author_id) {
+    console.log('author_id in query 3!!!!!', author_id);
+    SQL = `
+      INSERT INTO articles (author_id, title, category, "publishedOn", body)
+      VALUES (${author_id}, $1, $2, $3, $4)
+    ;`;
+    
+    values = [
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body
+    ];
+
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
