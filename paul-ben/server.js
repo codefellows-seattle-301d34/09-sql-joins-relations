@@ -6,7 +6,8 @@ const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-const conString = 'postgres://localhost:5432';
+// const conString = 'postgres://localhost:5432';
+const conString = 'postgres://benjamin:postgrespassword@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
 client.connect();
 client.on('error', error => {
@@ -34,7 +35,7 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = 'INSERT INTO authors(author, "authorUrl") VALUES ($1, $2) ON CONFLICT DO NOTHING';
+  let SQL = 'INSERT INTO authors(author, "authorUrl") VALUES ($1, $2) ON CONFLICT DO NOTHING;';
   let values = [
     request.body.author,
     request.body.authorUrl
@@ -48,12 +49,12 @@ app.post('/articles', (request, response) => {
     }
   )
 
-  SQL = 'SELECT * FROM authors WHERE author=$1';
-  values = [
-    request.body.author
-  ];
-
   function queryTwo() {
+    SQL = 'SELECT author_id FROM authors WHERE author=$1;';
+    values = [
+      request.body.author
+    ];
+
     client.query( SQL, values,
       function(err, result) {
         if (err) console.error(err);
@@ -64,11 +65,16 @@ app.post('/articles', (request, response) => {
     )
   }
 
-  // TODO: Fill in SQL query and values used in queryThree()
-  SQL = '';
-  values = [];
-
   function queryThree(author_id) {
+    SQL = 'INSERT INTO articles(title, category, "publishedOn", body, author_id) VALUES($1, $2, $3, $4, $5);';
+    values = [
+      request.body.title,
+      request.body.category,
+      request.body.publishedOn,
+      request.body.body,
+      author_id
+    ];
+
     client.query( SQL, values,
       function(err) {
         if (err) console.error(err);
@@ -79,16 +85,22 @@ app.post('/articles', (request, response) => {
 });
 
 app.put('/articles/:id', function(request, response) {
-
-  // TODO: Fill in SQL query and values
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE authors SET author = $1, "authorUrl" = $2 WHERE author_id = $3;';
+  let values = [
+    request.body.author,
+    request.body.authorUrl,
+    request.body.author_id
+  ];
   client.query( SQL, values )
     .then(() => {
-
-      // TODO: Fill in SQL query and values
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET title = $1, category = $2, "publishedOn" = $3, body = $4 WHERE article_id = $5';
+      let values = [
+        request.body.title,
+        request.body.category,
+        request.body.publishedOn,
+        request.body.body,
+        request.params.id
+      ];
       client.query( SQL, values )
     })
     .then(() => {
