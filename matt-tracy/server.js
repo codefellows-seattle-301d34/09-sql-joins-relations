@@ -42,8 +42,8 @@ app.get('/articles', (request, response) => {
 });
 
 app.post('/articles', (request, response) => {
-  let SQL = '';
-  let values = [];
+  let SQL = 'INSERT INTO authors (author, "authorUrl") VALUES ($1, $2)';
+  let values = [request.body.author, request.body.authorUrl];
 
   client.query( SQL, values,
     function(err) {
