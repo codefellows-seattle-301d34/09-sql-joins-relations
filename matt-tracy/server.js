@@ -45,7 +45,7 @@ app.post('/articles', (request, response) => {
   let SQL = 'INSERT INTO authors (author, "authorUrl") VALUES ($1, $2)';
   let values = [request.body.author, request.body.authorUrl];
 
-  client.query( SQL, values,
+  client.query(SQL, values,
     function(err) {
       if (err && err.code !== '23505') console.error('QUERY ONE ERROR',err);
       // REVIEW: This is our second query, to be executed when this first query is complete.
@@ -59,7 +59,7 @@ app.post('/articles', (request, response) => {
     let SQL2 = 'SELECT author_id FROM authors WHERE author = $1';
     values = [request.body.author];
     console.log("In query two", SQL2, values);
-    client.query( SQL2, values,
+    client.query(SQL2, values,
       function(err, result) {
         if (err) console.error('QUERY TWO',err);
         console.log('Query two complete', result.rows[0].author_id )
@@ -75,7 +75,7 @@ app.post('/articles', (request, response) => {
     values = [author_id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
     console.log("In query three", SQL3, values);
     console.log('Request title', request.body.title)
-    client.query( SQL3, values,
+    client.query(SQL3, values,
       function(err) {
         if (err) console.error('QUERY THREE',err);
         response.send('insert complete');
@@ -83,14 +83,23 @@ app.post('/articles', (request, response) => {
     );
   }
 });
+//update authors set author = 'tracy' from articles where authors.author_id = articles.author_id and article_id = 251;
 
 app.put('/articles/:id', function(request, response) {
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE articles\
+  SET title = $2,\
+  category = $3,\
+  "publishedOn" = $4,\
+  body = $5 WHERE article_id = $1';
+  let values = [request.params.id, request.body.title, request.body.category, request.body.publishedOn, request.body.body];
   client.query( SQL, values )
     .then(() => {
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE authors\
+       SET author = $2,\
+       "authorUrl" = $3\
+       FROM articles WHERE authors.author_id = articles.author_id\
+      AND article_id = $1';
+      let values = [request.params.id, request.body.author, request.body.authorUrl];
       client.query( SQL, values )
     })
     .then(() => {
