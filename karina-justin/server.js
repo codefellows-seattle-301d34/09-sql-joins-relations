@@ -49,7 +49,7 @@ app.post('/articles', (request, response) => {
     }
   )
 
-  
+
 
   function queryTwo() {
     SQL = 'SELECT author_id FROM authors where author = $1;';//get the id
@@ -67,7 +67,7 @@ app.post('/articles', (request, response) => {
     )
   }
 
-  
+
 
   function queryThree(author_id) {
     SQL = 'INSERT INTO articles ( author_id, title, category, "publishedOn", body) VALUES ($1, $2, $3, $4, $5);';
@@ -88,12 +88,27 @@ app.post('/articles', (request, response) => {
 });
 
 app.put('/articles/:id', function(request, response) {
-  let SQL = '';
-  let values = [];
+  let SQL = 'UPDATE articles Set author_id=$1, title=$2, category=$3, "publisedOn"=$4, body=$5 Where articled_id=$6';
+  let values = [
+    request.body.author,
+    request.body.title,
+    request.body.category,
+    request.body.publisehOn,
+    request.body.body,
+    request.params.article_id
+
+  ];
   client.query( SQL, values )
     .then(() => {
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET body=$1, category=$2, "publishedOn"=$3, title=$4 WHERE article_id=$5';//update authors table
+      let values = [
+        request.body.body,
+        request.body.category,
+        request.publishedOn,
+        request.body.title,
+        request.params.id
+
+      ];
       client.query( SQL, values )
     })
     .then(() => {
