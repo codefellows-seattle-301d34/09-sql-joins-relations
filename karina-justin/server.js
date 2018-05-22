@@ -100,8 +100,15 @@ app.put('/articles/:id', function(request, response) {
   ];
   client.query( SQL, values )
     .then(() => {
-      let SQL = '';
-      let values = [];
+      let SQL = 'UPDATE articles SET body=$1, category=$2, "publishedOn"=$3, title=$4 WHERE article_id=$5';//update authors table
+      let values = [
+        request.body.body,
+        request.body.category,
+        request.publishedOn,
+        request.body.title,
+        request.params.id
+
+      ];
       client.query( SQL, values )
     })
     .then(() => {
